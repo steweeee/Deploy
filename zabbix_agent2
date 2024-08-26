@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# Setting variables:
+echo -n Zabbiz server address: 
+read ZABBIX_ADDRESS
+
+# Installing Zabbix Agent 2
+wget https://repo.zabbix.com/zabbix/5.0/debian/pool/main/z/zabbix-release/zabbix-release_5.0-2+debian11_all.deb
+dpkg -i zabbix-release_5.0-2+debian11_all.deb
+apt update
+apt install zabbix-agent2
+
+# Setting .conf file, service actions:
+sed -i 's/Server=127.0.0.1/Server='"$ZABBIX_ADDRESS"'/' /etc/zabbix/zabbix_agent2.conf
+sed -i 's/ServerActive=127.0.0.1/ServerActive='"$ZABBIX_ADDRESS"'/' /etc/zabbix/zabbix_agent2.conf
+sed -i 's/Hostname=Zabbix server/Hostname='"$HOSTNAME"'/' /etc/zabbix/zabbix_agent2.conf
+systemctl restart zabbix-agent2
+systemctl enable zabbix-agent2 
